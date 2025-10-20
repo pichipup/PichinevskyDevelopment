@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CD Games Development</title>
+    <link rel="icon" href="disk.png" type="image/png">
+    <link rel="stylesheet" href="disign.css">
+</head>
+<body>
+    <div class="crt-overlay"></div>
+    <div class="scanline"></div>
+    <div class="scanlines"></div>
+    
+    <header class="pixel-border">
+        <div class="container header-content">
+            <div class="logo-container">
+                <img src="disk.png" 
+                     alt="CD Games Entertainment" 
+                     class="logo"
+                     crossorigin="anonymous">
+                <div class="logo-text glitch-effect" data-text="CD GAMES">CD GAMES</div>
+            </div>
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="ru">RU</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+        </div>
+    </header>
+    
+    <nav class="pixel-border">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="#home" data-key="nav-home" class="glitch-effect" data-text="ГЛАВНАЯ">ГЛАВНАЯ</a></li>
+                <li><a href="#about" data-key="nav-about" class="glitch-effect" data-text="О НАС">О НАС</a></li>
+                <li><a href="#services" data-key="nav-services" class="glitch-effect" data-text="СПЕЦИАЛИЗАЦИЯ">СПЕЦИАЛИЗАЦИЯ</a></li>
+                <li><a href="#portfolio" data-key="nav-portfolio" class="glitch-effect" data-text="НАШИ ИГРЫ">НАШИ ИГРЫ</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="container main-content">
+        <section id="home" class="content-section fade-in">
+            <h1 data-key="home-title" class="glitch-effect" data-text="ДОБРО ПОЖАЛОВАТЬ В CD GAMES">ДОБРО ПОЖАЛОВАТЬ В CD GAMES</h1>
+            <p data-key="home-subtitle" class="glitch-effect" data-text="> GAMES ARE A WAY TO RELAX">> GAMES ARE A WAY TO RELAX</p>
+        </section>
+        
+        <section id="about" class="content-section fade-in">
+            <h2 data-key="about-title" class="glitch-effect" data-text="О НАС">О НАС</h2>
+            <p data-key="about-text1" class="glitch-effect" data-text="> Наше объединение создано в 2025 году">> Наше объединение создано в 2025 году</p>
+            <p data-key="about-text2" class="glitch-effect" data-text="> Разработка ведется на Godot Engine">> Разработка ведется на Godot Engine</p>
+            <p data-key="about-text3" class="glitch-effect" data-text="> Активно работаем над проектами">> Активно работаем над проектами</p>
+        </section>
+        
+        <section id="services" class="content-section fade-in">
+            <h2 data-key="services-title" class="glitch-effect" data-text="СПЕЦИАЛИЗАЦИЯ">СПЕЦИАЛИЗАЦИЯ</h2>
+            <ul class="services-list">
+                <li data-key="service1" class="glitch-effect" data-text="Разработка игр PC">Разработка игр PC</li>
+                <li data-key="service2" class="glitch-effect" data-text="Создание концепций">Создание концепций</li>
+                <li data-key="service3" class="glitch-effect" data-text="Программирование">Программирование</li>
+                <li data-key="service4" class="glitch-effect" data-text="2D 3D графика">2D 3D графика</li>
+                <li data-key="service5" class="glitch-effect" data-text="Игровые сценарии">Игровые сценарии</li>
+            </ul>
+        </section>
+        
+        <section id="portfolio" class="content-section fade-in">
+            <h2 data-key="portfolio-title" class="glitch-effect" data-text="НАШИ ПРОЕКТЫ">НАШИ ПРОЕКТЫ</h2>
+            <ul class="games-list" id="games-list">
+                <li class="loading">Загрузка игр...</li>
+            </ul>
+            <p data-key="portfolio-text2" class="glitch-effect" data-text="> Следите за обновлениями в Телеграм">> Следите за обновлениями в Телеграм</p>
+        </section>
+    </main>
+    
+    <footer class="pixel-border">
+        <div class="container footer-content">
+            <div class="footer-top">
+                <p data-key="footer-text" class="glitch-effect" data-text="© 2025 CD GAMES ENTERTAINMENT">© 2025 CD GAMES ENTERTAINMENT</p>
+                <div class="social-links">
+                    <a href="https://t.me/CDGamess" target="_blank" class="glitch-effect" data-text="TELEGRAM">
+                        <span data-key="telegram-link">TELEGRAM</span>
+                    </a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p class="glitch-effect" data-text="CD GAMES DEV 2025">CD GAMES DEV 2025</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        async function loadGamesFromFile() {
+            try {
+                const response = await fetch('Games.txt');
+                if (!response.ok) {
+                    throw new Error('Games.txt not found');
+                }
+                
+                const text = await response.text();
+                return parseGamesFile(text);
+            } catch (error) {
+                console.error('Error loading games:', error);
+                return [];
+            }
+        }
+
+        function parseGamesFile(content) {
+            const games = [];
+            const lines = content.split('\n').filter(line => line.trim());
+            
+            let currentGame = null;
+            
+            for (const line of lines) {
+                if (line.startsWith('Название:')) {
+                    if (currentGame) {
+                        games.push(currentGame);
+                    }
+                    currentGame = {
+                        name: line.replace('Название:', '').trim(),
+                        status: '',
+                        url: ''
+                    };
+                } else if (line.startsWith('Статус:')) {
+                    if (currentGame) {
+                        currentGame.status = line.replace('Статус:', '').trim();
+                    }
+                } else if (line.startsWith('Ссылка:')) {
+                    if (currentGame) {
+                        currentGame.url = line.replace('Ссылка:', '').trim();
+                    }
+                } else if (line === '---') {
+                    if (currentGame) {
+                        games.push(currentGame);
+                        currentGame = null;
+                    }
+                }
+            }
+            
+            if (currentGame) {
+                games.push(currentGame);
+            }
+            
+            return games;
+        }
+
+        function renderGames(games) {
+            const gamesList = document.getElementById('games-list');
+            gamesList.innerHTML = '';
+            
+            if (games.length === 0) {
+                gamesList.innerHTML = '<li>Пока нет игр. Зайдите позже!</li>';
+                return;
+            }
+            
+            games.forEach((game) => {
+                const listItem = document.createElement('li');
+                const gameItem = document.createElement('div');
+                gameItem.className = 'game-item';
+                
+                const gameName = document.createElement(game.status === 'ready' ? 'a' : 'span');
+                gameName.className = `game-name ${game.status} glitch-effect`;
+                gameName.setAttribute('data-text', game.name);
+                gameName.textContent = game.name;
+                
+                if (game.status === 'ready') {
+                    gameName.href = game.url;
+                    gameName.target = '_blank';
+                    gameName.rel = 'noopener noreferrer';
+                }
+                
+                const gameStatus = document.createElement('span');
+                gameStatus.className = `game-status status-${game.status}`;
+                gameStatus.textContent = game.status === 'ready' 
+                    ? '✓ Готово к скачиванию!' 
+                    : '⌛ В разработке!';
+                
+                gameItem.appendChild(gameName);
+                gameItem.appendChild(gameStatus);
+                listItem.appendChild(gameItem);
+                gamesList.appendChild(listItem);
+            });
+        }
+
+        async function loadGames() {
+            const gamesList = document.getElementById('games-list');
+            gamesList.innerHTML = '<li class="loading">Загрузка игр...</li>';
+            
+            const games = await loadGamesFromFile();
+            renderGames(games);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            let currentLang = 'ru';
+            
+            updateContent(currentLang);
+            loadGames();
+            
+            langButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    if (lang !== currentLang) {
+                        currentLang = lang;
+                        updateContent(currentLang);
+                        
+                        langButtons.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.content-section').forEach(section => {
+                observer.observe(section);
+            });
+        });
+
+        const translations = {
+            ru: {
+                "nav-home": "ГЛАВНАЯ",
+                "nav-about": "ОБО МНЕ",
+                "nav-services": "СПЕЦИАЛИЗАЦИЯ",
+                "nav-portfolio": "МОИ ИГРЫ",
+                "home-title": "ДОБРО ПОЖАЛОВАТЬ ",
+                "home-subtitle": "> GAMES ARE A WAY TO RELAX",
+                "about-title": "ОБО МНЕ",
+                "about-text1": "> ",
+                "about-text2": "> Разработка ведется на Godot Engine",
+                "about-text3": "> ",
+                "services-title": "СПЕЦИАЛИЗАЦИЯ",
+                "service1": "Разработка игр PC",
+                "service2": "Создание концепций",
+                "service3": "Программирование",
+                "service4": "2D 3D графика",
+                "service5": "Игровые сценарии",
+                "portfolio-title": "НАШИ ПРОЕКТЫ",
+                "portfolio-text2": "> Следите за обновлениями в Телеграм",
+                "footer-text": "© 2025 Nikita Pichinevsky",
+                "telegram-link": "TELEGRAM"
+            },
+            en: {
+                "nav-home": "HOME",
+                "nav-about": "ABOUT",
+                "nav-services": "SPECIALIZATION",
+                "nav-portfolio": "OUR GAMES",
+                "home-title": "WELCOME ",
+                "home-subtitle": "> GAMES ARE A WAY TO RELAX",
+                "about-title": "ABOUT ME",
+                "about-text1": "> ",
+                "about-text2": "> Development is carried out on Godot Engine",
+                "about-text3": "> Actively working on projects",
+                "services-title": "SPECIALIZATION",
+                "service1": "PC Game Development",
+                "service2": "Concept Creation",
+                "service3": "Programming",
+                "service4": "2D 3D Graphics",
+                "service5": "Game Scenarios",
+                "portfolio-title": "MY PROJECTS",
+                "portfolio-text2": "> Follow updates on Telegram",
+                "footer-text": "© 2025 Nikita Pichinevsky",
+                "telegram-link": "TELEGRAM"
+            }
+        };
+
+        function updateContent(lang) {
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                    if (element.classList.contains('glitch-effect')) {
+                        element.setAttribute('data-text', translations[lang][key]);
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
