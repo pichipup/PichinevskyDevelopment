@@ -41,15 +41,15 @@
     
     <main class="container main-content">
         <section id="home" class="content-section fade-in">
-            <h1 data-key="home-title" class="glitch-effect" data-text="ДОБРО ПОЖАЛОВАТЬ В CD GAMES">ДОБРО ПОЖАЛОВАТЬ В CD GAMES</h1>
-            <p data-key="home-subtitle" class="glitch-effect" data-text="> GAMES ARE A WAY TO RELAX">> GAMES ARE A WAY TO RELAX</p>
+            <h1 data-key="home-title" class="glitch-effect" data-text="ДОБРО ПОЖАЛОВАть">ДОБРО ПОЖАЛОВАТЬ В CD GAMES</h1>
+            <p data-key="home-subtitle" class="glitch-effect" data-text="">> GAMES ARE A WAY TO RELAX</p>
         </section>
         
         <section id="about" class="content-section fade-in">
-            <h2 data-key="about-title" class="glitch-effect" data-text="О НАС">О НАС</h2>
-            <p data-key="about-text1" class="glitch-effect" data-text="> Наше объединение создано в 2025 году">> Наше объединение создано в 2025 году</p>
+            <h2 data-key="about-title" class="glitch-effect" data-text="ОБО МНЕ">ОБО МНЕ</h2>
+            <p data-key="about-text1" class="glitch-effect" data-text="> Разработчик-энтузиаст из России">> Разработчик-энтузиаст из России</p>
             <p data-key="about-text2" class="glitch-effect" data-text="> Разработка ведется на Godot Engine">> Разработка ведется на Godot Engine</p>
-            <p data-key="about-text3" class="glitch-effect" data-text="> Активно работаем над проектами">> Активно работаем над проектами</p>
+            <p data-key="about-text3" class="glitch-effect" data-text="">> Активно работаю над проектами</p>
         </section>
         
         <section id="services" class="content-section fade-in">
@@ -64,9 +64,9 @@
         </section>
         
         <section id="portfolio" class="content-section fade-in">
-            <h2 data-key="portfolio-title" class="glitch-effect" data-text="НАШИ ПРОЕКТЫ">НАШИ ПРОЕКТЫ</h2>
+            <h2 data-key="portfolio-title" class="glitch-effect" data-text="МОИ ПРОЕКТЫ">МОИ ПРОЕКТЫ</h2>
             <ul class="games-list" id="games-list">
-                <li class="loading">Загрузка игр...</li>
+                <li class="loading" data-key="loading-games">Загрузка игр...</li>
             </ul>
             <p data-key="portfolio-text2" class="glitch-effect" data-text="> Следите за обновлениями в Телеграм">> Следите за обновлениями в Телеграм</p>
         </section>
@@ -75,9 +75,9 @@
     <footer class="pixel-border">
         <div class="container footer-content">
             <div class="footer-top">
-                <p data-key="footer-text" class="glitch-effect" data-text="© 2025 CD GAMES ENTERTAINMENT">© 2025 CD GAMES ENTERTAINMENT</p>
+                <p data-key="footer-text" class="glitch-effect" data-text="© 2025 Nikita Pichinevsky">© 2025 Nikita Pichinevsky</p>
                 <div class="social-links">
-                    <a href="https://t.me/CDGamess" target="_blank" class="glitch-effect" data-text="TELEGRAM">
+                    <a href="" target="_blank" class="glitch-effect" data-text="TELEGRAM">
                         <span data-key="telegram-link">TELEGRAM</span>
                     </a>
                 </div>
@@ -143,12 +143,14 @@
             return games;
         }
 
-        function renderGames(games) {
+        function renderGames(games, lang = 'ru') {
             const gamesList = document.getElementById('games-list');
             gamesList.innerHTML = '';
             
             if (games.length === 0) {
-                gamesList.innerHTML = '<li>Пока нет игр. Зайдите позже!</li>';
+                const noGames = document.createElement('li');
+                noGames.textContent = lang === 'ru' ? 'Пока нет игр. Зайдите позже!' : 'No games yet. Check back later!';
+                gamesList.appendChild(noGames);
                 return;
             }
             
@@ -170,9 +172,17 @@
                 
                 const gameStatus = document.createElement('span');
                 gameStatus.className = `game-status status-${game.status}`;
-                gameStatus.textContent = game.status === 'ready' 
-                    ? '✓ Готово к скачиванию!' 
-                    : '⌛ В разработке!';
+                
+                // Локализация статусов
+                if (lang === 'ru') {
+                    gameStatus.textContent = game.status === 'ready' 
+                        ? '✓ Готово к скачиванию!' 
+                        : '⌛ В разработке!';
+                } else {
+                    gameStatus.textContent = game.status === 'ready' 
+                        ? '✓ Ready to download!' 
+                        : '⌛ In development!';
+                }
                 
                 gameItem.appendChild(gameName);
                 gameItem.appendChild(gameStatus);
@@ -181,17 +191,19 @@
             });
         }
 
+        let currentLang = 'ru';
+
         async function loadGames() {
             const gamesList = document.getElementById('games-list');
-            gamesList.innerHTML = '<li class="loading">Загрузка игр...</li>';
+            const loadingText = currentLang === 'ru' ? 'Загрузка игр...' : 'Loading games...';
+            gamesList.innerHTML = `<li class="loading">${loadingText}</li>`;
             
             const games = await loadGamesFromFile();
-            renderGames(games);
+            renderGames(games, currentLang);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             const langButtons = document.querySelectorAll('.lang-btn');
-            let currentLang = 'ru';
             
             updateContent(currentLang);
             loadGames();
@@ -202,6 +214,7 @@
                     if (lang !== currentLang) {
                         currentLang = lang;
                         updateContent(currentLang);
+                        loadGames(); // Перезагружаем игры с новым языком
                         
                         langButtons.forEach(btn => btn.classList.remove('active'));
                         this.classList.add('active');
@@ -234,11 +247,11 @@
                 "nav-services": "СПЕЦИАЛИЗАЦИЯ",
                 "nav-portfolio": "МОИ ИГРЫ",
                 "home-title": "ДОБРО ПОЖАЛОВАТЬ ",
-                "home-subtitle": "> GAMES ARE A WAY TO RELAX",
+                "home-subtitle": "",
                 "about-title": "ОБО МНЕ",
-                "about-text1": "> ",
+                "about-text1": "> Разработчик-энтузиаст из России",
                 "about-text2": "> Разработка ведется на Godot Engine",
-                "about-text3": "> ",
+                "about-text3": "",
                 "services-title": "СПЕЦИАЛИЗАЦИЯ",
                 "service1": "Разработка игр PC",
                 "service2": "Создание концепций",
@@ -248,7 +261,11 @@
                 "portfolio-title": "МОИ ПРОЕКТЫ",
                 "portfolio-text2": "> Следите за обновлениями в Телеграм",
                 "footer-text": "© 2025 Nikita Pichinevsky",
-                "telegram-link": "TELEGRAM"
+                "telegram-link": "TELEGRAM",
+                "loading-games": "Загрузка игр...",
+                "no-games": "Пока нет игр. Зайдите позже!",
+                "status-ready": "✓ Готово к скачиванию!",
+                "status-development": "⌛ В разработке!"
             },
             en: {
                 "nav-home": "HOME",
@@ -256,11 +273,11 @@
                 "nav-services": "SPECIALIZATION",
                 "nav-portfolio": "MY GAMES",
                 "home-title": "WELCOME ",
-                "home-subtitle": "> GAMES ARE A WAY TO RELAX",
+                "home-subtitle": "",
                 "about-title": "ABOUT ME",
-                "about-text1": "> ",
+                "about-text1": "> Developer enthusiast from Russia",
                 "about-text2": "> Development is carried out on Godot Engine",
-                "about-text3": "> Actively working on projects",
+                "about-text3": "",
                 "services-title": "SPECIALIZATION",
                 "service1": "PC Game Development",
                 "service2": "Concept Creation",
@@ -270,7 +287,11 @@
                 "portfolio-title": "MY PROJECTS",
                 "portfolio-text2": "> Follow updates on Telegram",
                 "footer-text": "© 2025 Nikita Pichinevsky",
-                "telegram-link": "TELEGRAM"
+                "telegram-link": "TELEGRAM",
+                "loading-games": "Loading games...",
+                "no-games": "No games yet. Check back later!",
+                "status-ready": "✓ Ready to download!",
+                "status-development": "⌛ In development!"
             }
         };
 
