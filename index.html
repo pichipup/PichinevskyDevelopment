@@ -6,6 +6,124 @@
     <title>Pichinevsky Development</title>
     <link rel="icon" href="disk.png" type="image/png">
     <link rel="stylesheet" href="disign.css">
+    <style>
+        /* Стили для баннера и галереи скриншотов */
+        .game-banner {
+            width: 100%;
+            max-width: 600px;
+            height: 200px;
+            object-fit: cover;
+            border: 3px solid #00ff00;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .game-banner:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px #00ff00;
+        }
+        
+        .game-item {
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        /* Модальное окно со скриншотами */
+        .screenshots-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: #000;
+            border: 3px solid #00ff00;
+            padding: 20px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 30px #00ff00;
+        }
+        
+        .screenshots-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 10px;
+        }
+        
+        .screenshot {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #00ff00;
+            font-size: 30px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: 'Courier New', monospace;
+            z-index: 1001;
+        }
+        
+        .close-modal:hover {
+            color: #ff0000;
+            text-shadow: 0 0 10px #ff0000;
+        }
+        
+        .no-screenshots {
+            text-align: center;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            padding: 40px;
+            font-size: 18px;
+        }
+        
+        .banner-loading {
+            width: 100%;
+            max-width: 600px;
+            height: 200px;
+            background: #111;
+            border: 2px solid #00ff00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        
+        .game-banner-container {
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .modal-title {
+            color: #00ff00;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+    </style>
 </head>
 <body>
     <div class="crt-overlay"></div>
@@ -72,6 +190,17 @@
         </section>
     </main>
     
+    <!-- Модальное окно для скриншотов -->
+    <div id="screenshotsModal" class="screenshots-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeScreenshotsModal()">&times;</button>
+            <div class="modal-title" id="modalGameTitle"></div>
+            <div id="screenshotsContainer" class="screenshots-container">
+                <!-- Скриншоты будут загружены сюда -->
+            </div>
+        </div>
+    </div>
+    
     <footer class="pixel-border">
         <div class="container footer-content">
             <div class="footer-top">
@@ -106,39 +235,39 @@
 
         function parseGamesFile(content) {
             const games = [];
-            const lines = content.split('\n').filter(line => line.trim());
+            const gameBlocks = content.split('***').filter(block => block.trim());
             
-            let currentGame = null;
-            
-            for (const line of lines) {
-                if (line.startsWith('Название:')) {
-                    if (currentGame) {
-                        games.push(currentGame);
+            gameBlocks.forEach(block => {
+                const lines = block.trim().split('\n').filter(line => line.trim());
+                const game = {
+                    name: '',
+                    status: '',
+                    url: '',
+                    banner: '',
+                    screenshots: []
+                };
+                
+                lines.forEach(line => {
+                    if (line.startsWith('Название:')) {
+                        game.name = line.replace('Название:', '').trim();
+                    } else if (line.startsWith('Статус:')) {
+                        game.status = line.replace('Статус:', '').trim();
+                    } else if (line.startsWith('Ссылка:')) {
+                        game.url = line.replace('Ссылка:', '').trim();
+                    } else if (line.startsWith('Баннер:')) {
+                        game.banner = line.replace('Баннер:', '').trim();
+                    } else if (line.startsWith('Скриншот_')) {
+                        const screenshotFile = line.substring(line.indexOf(':') + 1).trim();
+                        if (screenshotFile) {
+                            game.screenshots.push(screenshotFile);
+                        }
                     }
-                    currentGame = {
-                        name: line.replace('Название:', '').trim(),
-                        status: '',
-                        url: ''
-                    };
-                } else if (line.startsWith('Статус:')) {
-                    if (currentGame) {
-                        currentGame.status = line.replace('Статус:', '').trim();
-                    }
-                } else if (line.startsWith('Ссылка:')) {
-                    if (currentGame) {
-                        currentGame.url = line.replace('Ссылка:', '').trim();
-                    }
-                } else if (line === '---') {
-                    if (currentGame) {
-                        games.push(currentGame);
-                        currentGame = null;
-                    }
+                });
+                
+                if (game.name) {
+                    games.push(game);
                 }
-            }
-            
-            if (currentGame) {
-                games.push(currentGame);
-            }
+            });
             
             return games;
         }
@@ -155,10 +284,54 @@
             }
             
             games.forEach((game) => {
+                // Создаем контейнер для элемента игры
                 const listItem = document.createElement('li');
                 const gameItem = document.createElement('div');
                 gameItem.className = 'game-item';
                 
+                // Добавляем баннер или заглушку
+                const bannerContainer = document.createElement('div');
+                bannerContainer.className = 'game-banner-container';
+                
+                if (game.banner) {
+                    const bannerImg = document.createElement('img');
+                    bannerImg.className = 'game-banner';
+                    bannerImg.alt = game.name;
+                    
+                    // Устанавливаем источник баннера
+                    bannerImg.src = game.banner;
+                    bannerImg.onerror = function() {
+                        // При ошибке загрузки баннера показываем заглушку
+                        this.style.display = 'none';
+                        const placeholder = document.createElement('div');
+                        placeholder.className = 'banner-loading';
+                        placeholder.textContent = game.name;
+                        placeholder.onclick = function() {
+                            showGameScreenshots(game, lang);
+                        };
+                        bannerContainer.appendChild(placeholder);
+                    };
+                    
+                    // Добавляем обработчик клика для показа скриншотов
+                    bannerImg.onclick = function() {
+                        showGameScreenshots(game, lang);
+                    };
+                    
+                    bannerContainer.appendChild(bannerImg);
+                } else {
+                    // Если баннера нет, показываем заглушку с названием игры
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'banner-loading';
+                    placeholder.textContent = game.name;
+                    placeholder.onclick = function() {
+                        showGameScreenshots(game, lang);
+                    };
+                    bannerContainer.appendChild(placeholder);
+                }
+                
+                gameItem.appendChild(bannerContainer);
+                
+                // Создаем элемент с названием игры
                 const gameName = document.createElement(game.status === 'ready' ? 'a' : 'span');
                 gameName.className = `game-name ${game.status} glitch-effect`;
                 gameName.setAttribute('data-text', game.name);
@@ -170,6 +343,7 @@
                     gameName.rel = 'noopener noreferrer';
                 }
                 
+                // Создаем элемент со статусом игры
                 const gameStatus = document.createElement('span');
                 gameStatus.className = `game-status status-${game.status}`;
                 
@@ -184,12 +358,110 @@
                         : '⌛ In development!';
                 }
                 
-                gameItem.appendChild(gameName);
-                gameItem.appendChild(gameStatus);
+                // Создаем контейнер для названия и статуса
+                const gameHeader = document.createElement('div');
+                gameHeader.style.marginTop = '10px';
+                gameHeader.appendChild(gameName);
+                gameHeader.appendChild(document.createElement('br'));
+                gameHeader.appendChild(gameStatus);
+                
+                gameItem.appendChild(gameHeader);
                 listItem.appendChild(gameItem);
                 gamesList.appendChild(listItem);
             });
         }
+
+        // Функция для отображения скриншотов игры
+        function showGameScreenshots(game, lang) {
+            const modal = document.getElementById('screenshotsModal');
+            const container = document.getElementById('screenshotsContainer');
+            const title = document.getElementById('modalGameTitle');
+            
+            // Устанавливаем заголовок
+            title.textContent = game.name;
+            
+            // Очищаем контейнер
+            container.innerHTML = '';
+            
+            // Проверяем, есть ли скриншоты
+            if (game.screenshots && game.screenshots.length > 0) {
+                let hasValidScreenshots = false;
+                
+                // Загружаем все скриншоты
+                game.screenshots.forEach((screenshotFile, index) => {
+                    const screenshotContainer = document.createElement('div');
+                    screenshotContainer.className = 'screenshot-item';
+                    
+                    const img = document.createElement('img');
+                    img.className = 'screenshot';
+                    img.src = screenshotFile;
+                    img.alt = `${game.name} - скриншот ${index + 1}`;
+                    
+                    // Проверяем загрузку изображения
+                    img.onload = function() {
+                        hasValidScreenshots = true;
+                    };
+                    
+                    img.onerror = function() {
+                        // Если скриншот не загрузился, просто пропускаем его
+                        this.style.display = 'none';
+                    };
+                    
+                    screenshotContainer.appendChild(img);
+                    container.appendChild(screenshotContainer);
+                });
+                
+                // Если ни один скриншот не загрузился, показываем сообщение
+                setTimeout(() => {
+                    const visibleImages = container.querySelectorAll('img[style*="display: none"]');
+                    if (visibleImages.length === game.screenshots.length) {
+                        container.innerHTML = '';
+                        showNoScreenshotsMessage(container, game.name, lang);
+                    }
+                }, 1000);
+                
+            } else {
+                // Если скриншотов нет в конфигурации
+                showNoScreenshotsMessage(container, game.name, lang);
+            }
+            
+            // Показываем модальное окно
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Функция для показа сообщения об отсутствии скриншотов
+        function showNoScreenshotsMessage(container, gameName, lang) {
+            const message = document.createElement('div');
+            message.className = 'no-screenshots';
+            message.textContent = lang === 'ru' 
+                ? 'Нет скриншотов' 
+                : 'No screenshots';
+            container.appendChild(message);
+        }
+
+        // Функция для закрытия модального окна
+        function closeScreenshotsModal() {
+            const modal = document.getElementById('screenshotsModal');
+            modal.style.display = 'none';
+            
+            // Восстанавливаем прокрутку
+            document.body.style.overflow = 'auto';
+        }
+
+        // Закрытие модального окна при клике вне его
+        document.getElementById('screenshotsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeScreenshotsModal();
+            }
+        });
+
+        // Закрытие модального окна по клавише Esc
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeScreenshotsModal();
+            }
+        });
 
         let currentLang = 'ru';
 
