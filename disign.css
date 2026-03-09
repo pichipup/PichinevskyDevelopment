@@ -43,6 +43,8 @@ body {
         );
     position: relative;
     min-height: 100vh;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .green-glow {
