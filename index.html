@@ -1,584 +1,181 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pichinevsky Development</title>
-    <link rel="icon" href="disk.png" type="image/png">
-    <link rel="stylesheet" href="disign.css">
-    <style>
-        /* Стили для баннера и галереи скриншотов */
-        .game-banner {
-            width: 100%;
-            max-width: 600px;
-            height: 200px;
-            object-fit: cover;
-            border: 3px solid #00ff00;
-            margin: 10px 0;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .game-banner:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 15px #00ff00;
-        }
-        
-        .game-item {
-            position: relative;
-            margin: 20px 0;
-        }
-        
-        /* Модальное окно со скриншотами */
-        .screenshots-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
-        }
-        
-        .modal-content {
-            background: #000;
-            border: 3px solid #00ff00;
-            padding: 20px;
-            max-width: 90%;
-            max-height: 90%;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 0 30px #00ff00;
-        }
-        
-        .screenshots-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 10px;
-        }
-        
-        .screenshot {
-            max-width: 100%;
-            height: auto;
-            border: 2px solid #00ff00;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            color: #00ff00;
-            font-size: 30px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-family: 'Courier New', monospace;
-            z-index: 1001;
-        }
-        
-        .close-modal:hover {
-            color: #ff0000;
-            text-shadow: 0 0 10px #ff0000;
-        }
-        
-        .no-screenshots {
-            text-align: center;
-            color: #00ff00;
-            font-family: 'Courier New', monospace;
-            padding: 40px;
-            font-size: 18px;
-        }
-        
-        .banner-loading {
-            width: 100%;
-            max-width: 600px;
-            height: 200px;
-            background: #111;
-            border: 2px solid #00ff00;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #00ff00;
-            font-family: 'Courier New', monospace;
-            margin: 10px 0;
-            cursor: pointer;
-        }
-        
-        .game-banner-container {
-            margin: 15px 0;
-            text-align: center;
-        }
-        
-        .modal-title {
-            color: #00ff00;
-            text-align: center;
-            font-family: 'Courier New', monospace;
-            margin-bottom: 20px;
-            font-size: 24px;
-            text-shadow: 0 0 10px #00ff00;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pichinevsky Development</title>
+<link rel="icon" href="xencell.png" type="image/png">
+<link rel="stylesheet" href="disign.css">
 </head>
 <body>
-    <div class="crt-overlay"></div>
-    <div class="scanline"></div>
-    <div class="scanlines"></div>
-    
-    <header class="pixel-border">
-        <div class="container header-content">
-            <div class="logo-container">
-                <img src="disk.png" 
-                     alt="Pichinevsky Development" 
-                     class="logo"
-                     crossorigin="anonymous">
-                <div class="logo-text glitch-effect" data-text="Nikita Pichinevsky">Nikita Pichinevsky</div>
-            </div>
-            <div class="language-switcher">
-                <button class="lang-btn active" data-lang="ru">RU</button>
-                <button class="lang-btn" data-lang="en">EN</button>
-            </div>
-        </div>
-    </header>
-    
-    <nav class="pixel-border">
-        <div class="container">
-            <ul class="nav-links">
-                <li><a href="#home" data-key="nav-home" class="glitch-effect" data-text="ГЛАВНАЯ">ГЛАВНАЯ</a></li>
-                <li><a href="#about" data-key="nav-about" class="glitch-effect" data-text="ОБО МНЕ">ОБО МНЕ</a></li>
-                <li><a href="#services" data-key="nav-services" class="glitch-effect" data-text="СПЕЦИАЛИЗАЦИЯ">СПЕЦИАЛИЗАЦИЯ</a></li>
-                <li><a href="#portfolio" data-key="nav-portfolio" class="glitch-effect" data-text="МОИ ИГРЫ">МОИ ИГРЫ</a></li>
-            </ul>
-        </div>
-    </nav>
-    
-    <main class="container main-content">
-        <section id="home" class="content-section fade-in">
-            <h1 data-key="home-title" class="glitch-effect" data-text="ДОБРО ПОЖАЛОВАть">ДОБРО ПОЖАЛОВАТЬ В CD GAMES</h1>
-            <p data-key="home-subtitle" class="glitch-effect" data-text=""></p>
-        </section>
-        
-        <section id="about" class="content-section fade-in">
-            <h2 data-key="about-title" class="glitch-effect" data-text="ОБО МНЕ">ОБО МНЕ</h2>
-            <p data-key="about-text1" class="glitch-effect" data-text="> Разработчик-энтузиаст из России">> Разработчик-энтузиаст из России</p>
-            <p data-key="about-text2" class="glitch-effect" data-text="> Разработка ведется на Godot Engine">> Разработка ведется на Godot Engine</p>
-            <p data-key="about-text3" class="glitch-effect" data-text=""></p>
-        </section>
-        
-        <section id="services" class="content-section fade-in">
-            <h2 data-key="services-title" class="glitch-effect" data-text="СПЕЦИАЛИЗАЦИЯ">СПЕЦИАЛИЗАЦИЯ</h2>
-            <ul class="services-list">
-                <li data-key="service1" class="glitch-effect" data-text="Разработка игр PC">Разработка игр PC</li>
-                <li data-key="service2" class="glitch-effect" data-text="Создание концепций">Создание концепций</li>
-                <li data-key="service3" class="glitch-effect" data-text="Программирование">Программирование</li>
-                <li data-key="service4" class="glitch-effect" data-text="2D 3D графика">2D 3D графика</li>
-                <li data-key="service5" class="glitch-effect" data-text="Игровые сценарии">Игровые сценарии</li>
-            </ul>
-        </section>
-        
-        <section id="portfolio" class="content-section fade-in">
-            <h2 data-key="portfolio-title" class="glitch-effect" data-text="МОИ ПРОЕКТЫ">МОИ ПРОЕКТЫ</h2>
-            <ul class="games-list" id="games-list">
-                <li class="loading" data-key="loading-games">Загрузка игр...</li>
-            </ul>
-            <p data-key="portfolio-text2" class="glitch-effect" data-text="> Следите за обновлениями в Телеграм">> Следите за обновлениями в Телеграм</p>
-        </section>
-    </main>
-    
-    <!-- Модальное окно для скриншотов -->
-    <div id="screenshotsModal" class="screenshots-modal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeScreenshotsModal()">&times;</button>
-            <div class="modal-title" id="modalGameTitle"></div>
-            <div id="screenshotsContainer" class="screenshots-container">
-                <!-- Скриншоты будут загружены сюда -->
-            </div>
-        </div>
-    </div>
-    
-    <footer class="pixel-border">
-        <div class="container footer-content">
-            <div class="footer-top">
-                <p data-key="footer-text" class="glitch-effect" data-text="Since 2025">Since 2025</p>
-                <div class="social-links">
-                    <a href="" target="_blank" class="glitch-effect" data-text="TELEGRAM">
-                        <span data-key="telegram-link">TELEGRAM</span>
-                    </a>
-                </div>
-            </div>
-            <div class="copyright">
-                <p class="glitch-effect" data-text=""></p>
-            </div>
-        </div>
-    </footer>
 
-    <script>
-        async function loadGamesFromFile() {
-            try {
-                const response = await fetch('Games.txt');
-                if (!response.ok) {
-                    throw new Error('Games.txt not found');
-                }
-                
-                const text = await response.text();
-                return parseGamesFile(text);
-            } catch (error) {
-                console.error('Error loading games:', error);
-                return [];
-            }
-        }
+<div class="crt-overlay"></div>
+<div class="scanline"></div>
+<div class="scanlines"></div>
 
-        function parseGamesFile(content) {
-            const games = [];
-            const gameBlocks = content.split('***').filter(block => block.trim());
-            
-            gameBlocks.forEach(block => {
-                const lines = block.trim().split('\n').filter(line => line.trim());
-                const game = {
-                    name: '',
-                    status: '',
-                    url: '',
-                    banner: '',
-                    screenshots: []
-                };
-                
-                lines.forEach(line => {
-                    if (line.startsWith('Название:')) {
-                        game.name = line.replace('Название:', '').trim();
-                    } else if (line.startsWith('Статус:')) {
-                        game.status = line.replace('Статус:', '').trim();
-                    } else if (line.startsWith('Ссылка:')) {
-                        game.url = line.replace('Ссылка:', '').trim();
-                    } else if (line.startsWith('Баннер:')) {
-                        game.banner = line.replace('Баннер:', '').trim();
-                    } else if (line.startsWith('Скриншот_')) {
-                        const screenshotFile = line.substring(line.indexOf(':') + 1).trim();
-                        if (screenshotFile) {
-                            game.screenshots.push(screenshotFile);
-                        }
-                    }
-                });
-                
-                if (game.name) {
-                    games.push(game);
-                }
-            });
-            
-            return games;
-        }
+<header class="pixel-border">
+<div class="container header-content">
+<div class="logo-container">
+<img src="xencell.png" class="logo">
+<div class="logo-text glitch-effect">Nikita Pichinevsky</div>
+</div>
 
-        function renderGames(games, lang = 'ru') {
-            const gamesList = document.getElementById('games-list');
-            gamesList.innerHTML = '';
-            
-            if (games.length === 0) {
-                const noGames = document.createElement('li');
-                noGames.textContent = lang === 'ru' ? 'Пока нет игр. Зайдите позже!' : 'No games yet. Check back later!';
-                gamesList.appendChild(noGames);
-                return;
-            }
-            
-            games.forEach((game) => {
-                // Создаем контейнер для элемента игры
-                const listItem = document.createElement('li');
-                const gameItem = document.createElement('div');
-                gameItem.className = 'game-item';
-                
-                // Добавляем баннер или заглушку
-                const bannerContainer = document.createElement('div');
-                bannerContainer.className = 'game-banner-container';
-                
-                if (game.banner) {
-                    const bannerImg = document.createElement('img');
-                    bannerImg.className = 'game-banner';
-                    bannerImg.alt = game.name;
-                    
-                    // Устанавливаем источник баннера
-                    bannerImg.src = game.banner;
-                    bannerImg.onerror = function() {
-                        // При ошибке загрузки баннера показываем заглушку
-                        this.style.display = 'none';
-                        const placeholder = document.createElement('div');
-                        placeholder.className = 'banner-loading';
-                        placeholder.textContent = game.name;
-                        placeholder.onclick = function() {
-                            showGameScreenshots(game, lang);
-                        };
-                        bannerContainer.appendChild(placeholder);
-                    };
-                    
-                    // Добавляем обработчик клика для показа скриншотов
-                    bannerImg.onclick = function() {
-                        showGameScreenshots(game, lang);
-                    };
-                    
-                    bannerContainer.appendChild(bannerImg);
-                } else {
-                    // Если баннера нет, показываем заглушку с названием игры
-                    const placeholder = document.createElement('div');
-                    placeholder.className = 'banner-loading';
-                    placeholder.textContent = game.name;
-                    placeholder.onclick = function() {
-                        showGameScreenshots(game, lang);
-                    };
-                    bannerContainer.appendChild(placeholder);
-                }
-                
-                gameItem.appendChild(bannerContainer);
-                
-                // Создаем элемент с названием игры
-                const gameName = document.createElement(game.status === 'ready' ? 'a' : 'span');
-                gameName.className = `game-name ${game.status} glitch-effect`;
-                gameName.setAttribute('data-text', game.name);
-                gameName.textContent = game.name;
-                
-                if (game.status === 'ready') {
-                    gameName.href = game.url;
-                    gameName.target = '_blank';
-                    gameName.rel = 'noopener noreferrer';
-                }
-                
-                // Создаем элемент со статусом игры
-                const gameStatus = document.createElement('span');
-                gameStatus.className = `game-status status-${game.status}`;
-                
-                // Локализация статусов
-                if (lang === 'ru') {
-                    gameStatus.textContent = game.status === 'ready' 
-                        ? '✓ Готово к скачиванию!' 
-                        : '⌛ В разработке!';
-                } else {
-                    gameStatus.textContent = game.status === 'ready' 
-                        ? '✓ Ready to download!' 
-                        : '⌛ In development!';
-                }
-                
-                // Создаем контейнер для названия и статуса
-                const gameHeader = document.createElement('div');
-                gameHeader.style.marginTop = '10px';
-                gameHeader.appendChild(gameName);
-                gameHeader.appendChild(document.createElement('br'));
-                gameHeader.appendChild(gameStatus);
-                
-                gameItem.appendChild(gameHeader);
-                listItem.appendChild(gameItem);
-                gamesList.appendChild(listItem);
-            });
-        }
+<div class="language-switcher">
+<button class="lang-btn active" data-lang="ru">RU</button>
+<button class="lang-btn" data-lang="en">EN</button>
+</div>
+</div>
+</header>
 
-        // Функция для отображения скриншотов игры
-        function showGameScreenshots(game, lang) {
-            const modal = document.getElementById('screenshotsModal');
-            const container = document.getElementById('screenshotsContainer');
-            const title = document.getElementById('modalGameTitle');
-            
-            // Устанавливаем заголовок
-            title.textContent = game.name;
-            
-            // Очищаем контейнер
-            container.innerHTML = '';
-            
-            // Проверяем, есть ли скриншоты
-            if (game.screenshots && game.screenshots.length > 0) {
-                let hasValidScreenshots = false;
-                
-                // Загружаем все скриншоты
-                game.screenshots.forEach((screenshotFile, index) => {
-                    const screenshotContainer = document.createElement('div');
-                    screenshotContainer.className = 'screenshot-item';
-                    
-                    const img = document.createElement('img');
-                    img.className = 'screenshot';
-                    img.src = screenshotFile;
-                    img.alt = `${game.name} - скриншот ${index + 1}`;
-                    
-                    // Проверяем загрузку изображения
-                    img.onload = function() {
-                        hasValidScreenshots = true;
-                    };
-                    
-                    img.onerror = function() {
-                        // Если скриншот не загрузился, просто пропускаем его
-                        this.style.display = 'none';
-                    };
-                    
-                    screenshotContainer.appendChild(img);
-                    container.appendChild(screenshotContainer);
-                });
-                
-                // Если ни один скриншот не загрузился, показываем сообщение
-                setTimeout(() => {
-                    const visibleImages = container.querySelectorAll('img[style*="display: none"]');
-                    if (visibleImages.length === game.screenshots.length) {
-                        container.innerHTML = '';
-                        showNoScreenshotsMessage(container, game.name, lang);
-                    }
-                }, 1000);
-                
-            } else {
-                // Если скриншотов нет в конфигурации
-                showNoScreenshotsMessage(container, game.name, lang);
-            }
-            
-            // Показываем модальное окно
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
+<nav class="pixel-border">
+<div class="container">
+<ul class="nav-links">
+<li><a href="#home" data-key="nav-home">ГЛАВНАЯ</a></li>
+<li><a href="#about" data-key="nav-about">ОБО МНЕ</a></li>
+<li><a href="#services" data-key="nav-services">СПЕЦИАЛИЗАЦИЯ</a></li>
+<li><a href="#portfolio" data-key="nav-portfolio">МОИ ИГРЫ</a></li>
+</ul>
+</div>
+</nav>
 
-        // Функция для показа сообщения об отсутствии скриншотов
-        function showNoScreenshotsMessage(container, gameName, lang) {
-            const message = document.createElement('div');
-            message.className = 'no-screenshots';
-            message.textContent = lang === 'ru' 
-                ? 'Нет скриншотов' 
-                : 'No screenshots';
-            container.appendChild(message);
-        }
+<main class="container main-content">
 
-        // Функция для закрытия модального окна
-        function closeScreenshotsModal() {
-            const modal = document.getElementById('screenshotsModal');
-            modal.style.display = 'none';
-            
-            // Восстанавливаем прокрутку
-            document.body.style.overflow = 'auto';
-        }
+<section id="home" class="content-section fade-in">
+<h1 data-key="welcome">ДОБРО ПОЖАЛОВАТЬ</h1>
+</section>
 
-        // Закрытие модального окна при клике вне его
-        document.getElementById('screenshotsModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeScreenshotsModal();
-            }
-        });
+<section id="about" class="content-section fade-in">
+<h2 data-key="about-title">ОБО МНЕ</h2>
+<p data-key="about-1">> Разработчик-энтузиаст</p>
+<p data-key="about-2">> Разработка на Godot Engine</p>
+</section>
 
-        // Закрытие модального окна по клавише Esc
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeScreenshotsModal();
-            }
-        });
+<section id="services" class="content-section fade-in">
+<h2 data-key="services-title">СПЕЦИАЛИЗАЦИЯ</h2>
+<ul class="services-list">
+<li data-key="srv-1">Разработка игр PC</li>
+<li data-key="srv-2">Создание концепций</li>
+<li data-key="srv-3">Программирование</li>
+<li data-key="srv-4">2D 3D графика</li>
+<li data-key="srv-5">Игровые сценарии</li>
+</ul>
+</section>
 
-        let currentLang = 'ru';
+<section id="portfolio" class="content-section fade-in">
+<h2 data-key="portfolio-title">МОИ ПРОЕКТЫ</h2>
+<ul class="games-list" id="games-list"></ul>
+</section>
 
-        async function loadGames() {
-            const gamesList = document.getElementById('games-list');
-            const loadingText = currentLang === 'ru' ? 'Загрузка игр...' : 'Loading games...';
-            gamesList.innerHTML = `<li class="loading">${loadingText}</li>`;
-            
-            const games = await loadGamesFromFile();
-            renderGames(games, currentLang);
-        }
+</main>
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const langButtons = document.querySelectorAll('.lang-btn');
-            
-            updateContent(currentLang);
-            loadGames();
-            
-            langButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const lang = this.getAttribute('data-lang');
-                    if (lang !== currentLang) {
-                        currentLang = lang;
-                        updateContent(currentLang);
-                        loadGames(); // Перезагружаем игры с новым языком
-                        
-                        langButtons.forEach(btn => btn.classList.remove('active'));
-                        this.classList.add('active');
-                    }
-                });
-            });
+<footer class="pixel-border">
+<div class="container footer-content">
+<p>Since 2025</p>
+</div>
+</footer>
 
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-            
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in');
-                    }
-                });
-            }, observerOptions);
-            
-            document.querySelectorAll('.content-section').forEach(section => {
-                observer.observe(section);
-            });
-        });
+<script>
+const translations = {
+ru: {
+"nav-home": "ГЛАВНАЯ",
+"nav-about": "ОБО МНЕ",
+"nav-services": "СПЕЦИАЛИЗАЦИЯ",
+"nav-portfolio": "МОИ ИГРЫ",
 
-        const translations = {
-            ru: {
-                "nav-home": "ГЛАВНАЯ",
-                "nav-about": "ОБО МНЕ",
-                "nav-services": "СПЕЦИАЛИЗАЦИЯ",
-                "nav-portfolio": "МОИ ИГРЫ",
-                "home-title": "ДОБРО ПОЖАЛОВАТЬ ",
-                "home-subtitle": "",
-                "about-title": "ОБО МНЕ",
-                "about-text1": "> Разработчик-энтузиаст из России",
-                "about-text2": "> Разработка ведется на Godot Engine",
-                "about-text3": "",
-                "services-title": "СПЕЦИАЛИЗАЦИЯ",
-                "service1": "Разработка игр PC",
-                "service2": "Создание концепций",
-                "service3": "Программирование",
-                "service4": "2D 3D графика",
-                "service5": "Игровые сценарии",
-                "portfolio-title": "МОИ ПРОЕКТЫ",
-                "portfolio-text2": "> Следите за обновлениями в Телеграм",
-                "footer-text": "Since 2025",
-                "telegram-link": "TELEGRAM",
-                "loading-games": "Загрузка игр...",
-                "no-games": "Пока нет игр. Зайдите позже!",
-                "status-ready": "✓ Готово к скачиванию!",
-                "status-development": "⌛ В разработке!"
-            },
-            en: {
-                "nav-home": "HOME",
-                "nav-about": "ABOUT ME",
-                "nav-services": "SPECIALIZATION",
-                "nav-portfolio": "MY GAMES",
-                "home-title": "WELCOME ",
-                "home-subtitle": "",
-                "about-title": "ABOUT ME",
-                "about-text1": "> Developer enthusiast from Russia",
-                "about-text2": "> Development is carried out on Godot Engine",
-                "about-text3": "",
-                "services-title": "SPECIALIZATION",
-                "service1": "PC Game Development",
-                "service2": "Concept Creation",
-                "service3": "Programming",
-                "service4": "2D 3D Graphics",
-                "service5": "Game Scenarios",
-                "portfolio-title": "MY PROJECTS",
-                "portfolio-text2": "> Follow updates on Telegram",
-                "footer-text": "Since 2025",
-                "telegram-link": "TELEGRAM",
-                "loading-games": "Loading games...",
-                "no-games": "No games yet. Check back later!",
-                "status-ready": "✓ Ready to download!",
-                "status-development": "⌛ In development!"
-            }
-        };
+"welcome": "ДОБРО ПОЖАЛОВАТЬ",
 
-        function updateContent(lang) {
-            const elements = document.querySelectorAll('[data-key]');
-            elements.forEach(element => {
-                const key = element.getAttribute('data-key');
-                if (translations[lang] && translations[lang][key]) {
-                    element.textContent = translations[lang][key];
-                    if (element.classList.contains('glitch-effect')) {
-                        element.setAttribute('data-text', translations[lang][key]);
-                    }
-                }
-            });
-        }
-    </script>
+"about-title": "ОБО МНЕ",
+"about-1": "> Разработчик-энтузиаст",
+"about-2": "> Разработка на Godot Engine",
+
+"services-title": "СПЕЦИАЛИЗАЦИЯ",
+"srv-1": "Разработка игр PC",
+"srv-2": "Создание концепций",
+"srv-3": "Программирование",
+"srv-4": "2D / 3D графика",
+"srv-5": "Сюжеты для игр",
+
+"portfolio-title": "МОИ ПРОЕКТЫ"
+},
+en: {
+"nav-home": "HOME",
+"nav-about": "ABOUT",
+"nav-services": "SPECIALIZATION",
+"nav-portfolio": "MY GAMES",
+
+"welcome": "WELCOME",
+
+"about-title": "ABOUT ME",
+"about-1": "> Indie developer",
+"about-2": "> Developing with Godot Engine",
+
+"services-title": "SPECIALIZATION",
+"srv-1": "PC Game Development",
+"srv-2": "Concept Creation",
+"srv-3": "Programming",
+"srv-4": "2D / 3D Graphics",
+"srv-5": "Game plots",
+
+"portfolio-title": "MY PROJECTS"
+}
+};
+
+let currentLang = "ru";
+
+function updateContent(lang){
+document.querySelectorAll("[data-key]").forEach(el=>{
+const key = el.getAttribute("data-key");
+if(translations[lang][key]){
+el.textContent = translations[lang][key];
+}
+});
+}
+
+document.querySelectorAll(".lang-btn").forEach(btn=>{
+btn.addEventListener("click", function(){
+const lang = this.getAttribute("data-lang");
+
+currentLang = lang;
+updateContent(lang);
+
+document.querySelectorAll(".lang-btn").forEach(b=>b.classList.remove("active"));
+this.classList.add("active");
+});
+});
+
+const games = [
+{
+name: "They Are Walking Beside You",
+url: "T.A.W.B.Y.html"
+}
+];
+
+function renderGames() {
+const list = document.getElementById('games-list');
+list.innerHTML = '';
+
+games.forEach(game => {
+const li = document.createElement('li');
+
+const wrapper = document.createElement('div');
+wrapper.className = 'game-item';
+
+const link = document.createElement('a');
+link.href = game.url;
+link.textContent = game.name;
+link.className = 'game-name ready';
+
+wrapper.appendChild(link);
+li.appendChild(wrapper);
+list.appendChild(li);
+});
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+updateContent(currentLang);
+renderGames();
+});
+</script>
+
 </body>
 </html>
