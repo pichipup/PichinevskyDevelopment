@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>They Are Walking Beside You</title>
+
+<link rel="icon" href="xencell.png" type="image/png">
+<link rel="stylesheet" href="site.css">
+
+<style>
+.desc-container {
+  padding: 20px;
+  background-color: rgba(0,0,0,0.5);
+  color: #7be599;
+  line-height: 1.6;
+  font-size: 16px;
+  white-space: pre-wrap;
+  margin-top: 15px;
+}
+
+.desc-container.pixel-border {
+  border: var(--pixel-size) solid var(--border-color);
+  position: relative;
+  box-shadow: var(--pixel-shadow);
+}
+
+.desc-container.pixel-border::before,
+.desc-container.pixel-border::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.desc-container.pixel-border::before {
+  top: calc(-1 * var(--pixel-size));
+  left: calc(-1 * var(--pixel-size));
+  right: calc(-1 * var(--pixel-size));
+  bottom: calc(-1 * var(--pixel-size));
+  border: var(--pixel-size) solid var(--border-color);
+}
+
+.desc-container.pixel-border::after {
+  top: calc(-2 * var(--pixel-size));
+  left: calc(-2 * var(--pixel-size));
+  right: calc(-2 * var(--pixel-size));
+  bottom: calc(-2 * var(--pixel-size));
+  border: var(--pixel-size) solid rgba(127, 80, 244, 0.3);
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="crt-overlay"></div>
+<div class="scanline"></div>
+<div class="scanlines"></div>
+
+<header class="pixel-border">
+<div class="container header-content">
+
+<div class="logo-container">
+<img src="xencell.png" class="logo">
+<div class="logo-text">Nikita Pichinevsky</div>
+</div>
+
+<div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+
+<div style="display:flex; gap:10px;">
+<button class="lang-btn active" data-lang="ru">RU</button>
+<button class="lang-btn" data-lang="en">EN</button>
+</div>
+
+<button onclick="goHome()" class="lang-btn" data-key="home-btn">
+ГЛАВНАЯ
+</button>
+
+<div class="music-control">
+<span id="musicLabel">Музыка</span>
+<label class="switch">
+<input type="checkbox" id="musicToggle">
+<span class="slider"></span>
+</label>
+</div>
+
+</div>
+</div>
+</header>
+
+<audio id="menuMusic" loop>
+<source src="sounds/T.A.W.B.Y.mp3" type="audio/mpeg">
+</audio>
+
+<main class="container main-content">
+
+<section class="content-section fade-in">
+<h1 data-key="title">Название игры</h1>
+
+<p class="pixel-border" data-key="h2">> Описание игры</p>
+
+<div class="desc-container pixel-border" data-key="desc2">Загрузка описания...</div>
+
+<div style="margin-top:30px;">
+<a href="#" class="lang-btn" data-key="download">СКАЧАТЬ</a>
+</div>
+
+</section>
+</main>
+
+<footer class="pixel-border">
+<div class="container footer-content">
+<p>Since 2025</p>
+</div>
+</footer>
+
+<script>
+function goHome(){
+  window.location.href = "index.html";
+}
+
+const translations = {
+  ru: {
+    "title": "They Are Walking Beside You",
+    "h2": "\nНачало Разработки:\n 22 февраля 2026 г.\n\nАвтор Идеи:\n Пичиневский Н.Д.\n\nРазработчик:\n Пичиневский Н.Д\n",
+    "desc2": `
+Вы очнулись вместе с Алексом в одиночестве и должны помогать ему найти Елену, следуя загадочным следам. 
+Лес вокруг искажается: странные существа подражают голосу Елены, а окружение становится всё более враждебным и нереальным. 
+Вы сталкиваетесь с «Скитальцами», наблюдающими за Алексом, и «Ветвями», маскирующимися под обычные растения, и помогаете ему сохранять рассудок.
+
+Продвигаясь глубже, вы находите заброшенную церковь, охотничий дом и следы людей, пропавших здесь десятилетиями ранее. 
+Реальность трескается: галлюцинации смешиваются с воспоминаниями о прошлом, и только ваша поддержка помогает Алексу не потеряться окончательно.
+
+В пещере законы физики нарушаются, а невидимые существа — «Шорохи» — воспроизводят фрагменты его жизни с Еленой. «Слепые» реагируют на звук, и вы должны быть внимательны, помогая Алексу ориентироваться. 
+Ваши действия определяют, сможет ли он сохранить связь с реальностью.
+
+И когда страх и отчаяние достигают предела, вы понимаете, что ваша поддержка имеет значение. 
+И пожалуйста, помни — 
+<p style="color:red; font-weight:bold;">ОНИ БРОДЯТ РЯДОМ С ТОБОЙ!</p>
+    `,
+    "download": "СКАЧАТЬ",
+    "home-btn": "ГЛАВНАЯ",
+    "music": "Музыка"
+  },
+  en: {
+    "title": "They Are Walking Beside You",
+    "h2": "\nDevelopment started:\n February 22, 2026\n\nIdea by:\n N.D. Pichinevsky\n\nDeveloper:\n N.D. Pichinevsky\n",
+    "desc2": `
+You awaken alongside Alex, and it’s up to you to help him find Elena, following mysterious traces. 
+The forest distorts around you: strange creatures mimic Elena's voice, and the environment grows increasingly hostile and unreal. 
+You encounter the "Wanderers," observing Alex, and the "Branches," camouflaged as ordinary plants, guiding him to stay sane.
+
+Deeper in, you explore abandoned locations together — a church, a hunting lodge, and traces of people missing for decades. 
+Reality fractures: hallucinations merge with memories of the past, and only your support keeps Alex grounded.
+
+In the cave, physics breaks down, and invisible beings — the "Rustles" — replay fragments of his life with Elena. The "Blind" react to sound, and your careful guidance is crucial. 
+Your choices determine whether Alex can maintain his grip on reality.
+
+And when fear and despair reach their peak, you realize that your presence truly matters.
+And please don't forget —
+<p style="color:red; font-weight:bold;"> THEY ARE WALKING BESIDE YOU!</p>
+    `,
+    "download": "DOWNLOAD",
+    "home-btn": "HOME",
+    "music": "Music"
+  }
+};
+
+let currentLang = localStorage.getItem("lang") || "ru";
+
+function updateContent(lang){
+  document.querySelectorAll("[data-key]").forEach(el=>{
+    const key = el.getAttribute("data-key");
+    if(translations[lang][key]){
+      if(key === "desc2"){
+        el.innerHTML = translations[lang][key]; 
+      } else {
+        el.textContent = translations[lang][key];
+      }
+    }
+  });
+  document.getElementById("musicLabel").textContent = translations[lang].music;
+}
+
+document.querySelectorAll(".lang-btn").forEach(btn=>{
+  btn.addEventListener("click", function(){
+    const lang = this.getAttribute("data-lang");
+    if(!lang) return;
+
+    currentLang = lang;
+    localStorage.setItem("lang", lang);
+
+    updateContent(lang);
+
+    document.querySelectorAll(".lang-btn").forEach(b=>b.classList.remove("active"));
+    this.classList.add("active");
+  });
+});
+
+const music = document.getElementById("menuMusic");
+const toggle = document.getElementById("musicToggle");
+
+toggle.checked = false;
+music.pause();
+music.currentTime = 0;
+
+toggle.addEventListener("change", ()=>{
+  if(toggle.checked){
+    music.play().catch(()=>{});
+    localStorage.setItem("music", "true");
+  } else {
+    music.pause();
+    music.currentTime = 0;
+    localStorage.setItem("music", "false");
+  }
+});
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  updateContent(currentLang);
+});
+</script>
+
+</body>
+</html>
