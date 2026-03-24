@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>They Are Walking Beside You</title>
+
+<link rel="icon" href="xencell.png" type="image/png">
+<link rel="stylesheet" href="site.css">
+
+</head>
+
+<body>
+
+<div class="crt-overlay"></div>
+<div class="scanline"></div>
+<div class="scanlines"></div>
+
+<header class="pixel-border">
+<div class="container header-content">
+
+<div class="logo-container">
+<img src="xencell.png" class="logo">
+<div class="logo-text">Nikita Pichinevsky</div>
+</div>
+
+<div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+
+<div style="display:flex; gap:10px;">
+<button class="lang-btn active" data-lang="ru">RU</button>
+<button class="lang-btn" data-lang="en">EN</button>
+</div>
+
+<button onclick="goHome()" class="lang-btn" data-key="home-btn">
+ГЛАВНАЯ
+</button>
+
+<div class="music-control">
+<span id="musicLabel">Музыка</span>
+<label class="switch">
+<input type="checkbox" id="musicToggle">
+<span class="slider"></span>
+</label>
+</div>
+
+</div>
+</div>
+</header>
+
+<audio id="menuMusic" loop>
+<source src="Sounds/T.A.W.B.Y.mp3" type="audio/mpeg">
+</audio>
+
+<main class="container main-content">
+
+<section class="content-section fade-in">
+<h1 data-key="title">Название игры</h1>
+
+<div class="desc-container pixel-border" data-key="desc2">Загрузка описания...</div>
+
+<div style="margin-top:30px;">
+<a href="#" class="lang-btn" data-key="download">СКАЧАТЬ</a>
+</div>
+
+<div class="since-text">Since 2025</div>
+
+</section>
+</main>
+
+<script>
+function goHome(){
+  window.location.href = "index.html";
+}
+
+const translations = {
+  ru: {
+    "title": "They Are Walking Beside You",
+    "desc2": `
+Вы вместе с Алексом ищете Елену, следуя странным следам в искаженном лесу. 
+Существа подражают её голосу, а мир становится всё более опасным и нереальным.
+
+Вы находите заброшенные места и следы пропавших людей, пока реальность смешивается с галлюцинациями. 
+Только ваша помощь удерживает Алекса от потери рассудка.
+
+И помни —
+<p style="color:red; font-weight:bold;">ОНИ БРОДЯТ РЯДОМ С ТОБОЙ!</p>
+    `,
+    "download": "СКАЧАТЬ",
+    "home-btn": "ГЛАВНАЯ",
+    "music": "Музыка"
+  },
+  en: {
+    "title": "They Are Walking Beside You",
+    "desc2": `
+You help Alex search for Elena, following strange traces in a distorted forest. 
+Creatures mimic her voice, and the world becomes increasingly hostile.
+
+You discover abandoned places and missing people’s traces as reality blends with hallucinations. 
+Only your guidance keeps Alex sane.
+
+And remember —
+<p style="color:red; font-weight:bold;">THEY ARE WALKING BESIDE YOU!</p>
+    `,
+    "download": "DOWNLOAD",
+    "home-btn": "HOME",
+    "music": "Music"
+  }
+};
+
+let currentLang = localStorage.getItem("lang") || "ru";
+
+function updateContent(lang){
+  document.querySelectorAll("[data-key]").forEach(el=>{
+    const key = el.getAttribute("data-key");
+    if(translations[lang][key]){
+      if(key === "desc2"){
+        el.innerHTML = translations[lang][key]; 
+      } else {
+        el.textContent = translations[lang][key];
+      }
+    }
+  });
+  document.getElementById("musicLabel").textContent = translations[lang].music;
+}
+
+document.querySelectorAll(".lang-btn").forEach(btn=>{
+  btn.addEventListener("click", function(){
+    const lang = this.getAttribute("data-lang");
+    if(!lang) return;
+
+    currentLang = lang;
+    localStorage.setItem("lang", lang);
+
+    updateContent(lang);
+
+    document.querySelectorAll(".lang-btn").forEach(b=>b.classList.remove("active"));
+    this.classList.add("active");
+  });
+});
+
+const music = document.getElementById("menuMusic");
+const toggle = document.getElementById("musicToggle");
+
+toggle.checked = false;
+music.pause();
+music.currentTime = 0;
+
+toggle.addEventListener("change", ()=>{
+  if(toggle.checked){
+    music.play().catch(()=>{});
+    localStorage.setItem("music", "true");
+  } else {
+    music.pause();
+    music.currentTime = 0;
+    localStorage.setItem("music", "false");
+  }
+});
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  updateContent(currentLang);
+});
+</script>
+
+</body>
+</html>
