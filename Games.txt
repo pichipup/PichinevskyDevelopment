@@ -1,0 +1,10 @@
+Название: The Lighthouse
+Ссылка: 
+Статус: development
+Описание_ru: маяк
+Описание_en: lighthouse
+Баннер: light.png
+Скриншот_1: .jpg
+Скриншот_2: .jpg
+***
+:
