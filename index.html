@@ -171,21 +171,210 @@
         <section id="services" class="content-section fade-in">
             <h2 data-key="services-title" class="glitch-effect" data-text="СПЕЦИАЛИЗАЦИЯ">СПЕЦИАЛИЗАЦИЯ</h2>
             <ul class="services-list">
-                <li data-key="service1" class="glitch-effect">Разработка игр PC</li>
-                <li data-key="service2" class="glitch-effect">Создание концепций</li>
-                <li data-key="service3" class="glitch-effect">Программирование</li>
-                <li data-key="service4" class="glitch-effect">2D 3D графика</li>
-                <li data-key="service5" class="glitch-effect">Игровые сценарии</li>
+                <li data-key="service1" class="glitch-effect" data-text="Разработка игр PC">Разработка игр PC</li>
+                <li data-key="service2" class="glitch-effect" data-text="Создание концепций">Создание концепций</li>
+                <li data-key="service3" class="glitch-effect" data-text="Программирование">Программирование</li>
+                <li data-key="service4" class="glitch-effect" data-text="2D 3D графика">2D 3D графика</li>
+                <li data-key="service5" class="glitch-effect" data-text="Игровые сценарии">Игровые сценарии</li>
             </ul>
         </section>
         
         <section id="portfolio" class="content-section fade-in">
-            <h2 data-key="portfolio-title" class="glitch-effect">МОИ ПРОЕКТЫ</h2>
+            <h2 data-key="portfolio-title" class="glitch-effect" data-text="МОИ ПРОЕКТЫ">МОИ ПРОЕКТЫ</h2>
             <ul class="games-list" id="games-list">
-                <li class="loading">Загрузка игр...</li>
+                <li class="loading" data-key="loading-games">Загрузка игр...</li>
             </ul>
-            <p data-key="portfolio-text2" class="glitch-effect">> Следите за обновлениями в Телеграм</p>
+            <p data-key="portfolio-text2" class="glitch-effect" data-text="> Следите за обновлениями в Телеграм">> Следите за обновлениями в Телеграм</p>
         </section>
     </main>
+    
+    <div id="screenshotsModal" class="screenshots-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeScreenshotsModal()">&times;</button>
+            <div class="modal-title" id="modalGameTitle"></div>
+            <div id="screenshotsContainer" class="screenshots-container"></div>
+        </div>
+    </div>
+    
+    <footer class="pixel-border">
+        <div class="container footer-content">
+            <div class="footer-top">
+                <p data-key="footer-text" class="glitch-effect" data-text="© 2025 Nikita Pichinevsky">© 2025 Nikita Pichinevsky</p>
+                <div class="social-links">
+                    <a href="" target="_blank" class="glitch-effect" data-text="TELEGRAM">
+                        <span data-key="telegram-link">TELEGRAM</span>
+                    </a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p class="glitch-effect" data-text=""></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        async function loadGamesFromFile() {
+            try {
+                const response = await fetch('Games.txt');
+                if (!response.ok) {
+                    throw new Error('Games.txt not found');
+                }
+                const text = await response.text();
+                return parseGamesFile(text);
+            } catch (error) {
+                console.error('Error loading games:', error);
+                return [];
+            }
+        }
+
+        function parseGamesFile(content) {
+            const games = [];
+            const gameBlocks = content.split('***').filter(block => block.trim());
+            
+            gameBlocks.forEach(block => {
+                const lines = block.trim().split('\n').filter(line => line.trim());
+                const game = { name:'', status:'', url:'', banner:'', screenshots:[] };
+                
+                lines.forEach(line => {
+                    if (line.startsWith('Название:')) game.name = line.replace('Название:', '').trim();
+                    else if (line.startsWith('Статус:')) game.status = line.replace('Статус:', '').trim();
+                    else if (line.startsWith('Ссылка:')) game.url = line.replace('Ссылка:', '').trim();
+                    else if (line.startsWith('Баннер:')) game.banner = line.replace('Баннер:', '').trim();
+                    else if (line.startsWith('Скриншот_')) {
+                        const f = line.substring(line.indexOf(':')+1).trim();
+                        if (f) game.screenshots.push(f);
+                    }
+                });
+                
+                if (game.name) games.push(game);
+            });
+            return games;
+        }
+
+        function renderGames(games, lang='ru') {
+            const gamesList = document.getElementById('games-list');
+            gamesList.innerHTML = '';
+            
+            if (!games.length) {
+                const li=document.createElement('li');
+                li.textContent=lang==='ru'?'Пока нет игр. Зайдите позже!':'No games yet. Check back later!';
+                gamesList.appendChild(li);
+                return;
+            }
+            
+            games.forEach(game=>{
+                const li=document.createElement('li');
+                const item=document.createElement('div');
+                item.className='game-item';
+                
+                const bc=document.createElement('div');
+                bc.className='game-banner-container';
+                
+                if (game.banner) {
+                    const img=document.createElement('img');
+                    img.className='game-banner';
+                    img.src=game.banner;
+                    img.alt=game.name;
+                    img.onclick=()=>showGameScreenshots(game,lang);
+                    img.onerror=function(){
+                        this.style.display='none';
+                        const p=document.createElement('div');
+                        p.className='banner-loading';
+                        p.textContent=game.name;
+                        p.onclick=()=>showGameScreenshots(game,lang);
+                        bc.appendChild(p);
+                    };
+                    bc.appendChild(img);
+                } else {
+                    const p=document.createElement('div');
+                    p.className='banner-loading';
+                    p.textContent=game.name;
+                    p.onclick=()=>showGameScreenshots(game,lang);
+                    bc.appendChild(p);
+                }
+                
+                item.appendChild(bc);
+                
+                const name=document.createElement(game.status==='ready'?'a':'span');
+                name.className=`game-name ${game.status} glitch-effect`;
+                name.textContent=game.name;
+                if (game.status==='ready') {
+                    name.href=game.url;
+                    name.target='_blank';
+                }
+                
+                const status=document.createElement('span');
+                status.className=`game-status status-${game.status}`;
+                status.textContent = lang==='ru'
+                    ? (game.status==='ready'?'✓ Готово к скачиванию!':'⌛ В разработке!')
+                    : (game.status==='ready'?'✓ Ready to download!':'⌛ In development!');
+                
+                const header=document.createElement('div');
+                header.style.marginTop='10px';
+                header.appendChild(name);
+                header.appendChild(document.createElement('br'));
+                header.appendChild(status);
+                
+                item.appendChild(header);
+                li.appendChild(item);
+                gamesList.appendChild(li);
+            });
+        }
+
+        function showGameScreenshots(game, lang) {
+            const modal=document.getElementById('screenshotsModal');
+            const c=document.getElementById('screenshotsContainer');
+            const t=document.getElementById('modalGameTitle');
+            t.textContent=game.name;
+            c.innerHTML='';
+            
+            if (game.screenshots?.length) {
+                game.screenshots.forEach((s,i)=>{
+                    const d=document.createElement('div');
+                    const img=document.createElement('img');
+                    img.className='screenshot';
+                    img.src=s;
+                    img.alt=game.name;
+                    img.onerror=()=>img.style.display='none';
+                    d.appendChild(img);
+                    c.appendChild(d);
+                });
+            } else {
+                const m=document.createElement('div');
+                m.className='no-screenshots';
+                m.textContent=lang==='ru'?'Нет скриншотов':'No screenshots';
+                c.appendChild(m);
+            }
+            
+            modal.style.display='flex';
+            document.body.style.overflow='hidden';
+        }
+
+        function closeScreenshotsModal(){
+            document.getElementById('screenshotsModal').style.display='none';
+            document.body.style.overflow='auto';
+        }
+
+        document.getElementById('screenshotsModal').onclick=e=>{
+            if(e.target.id==='screenshotsModal') closeScreenshotsModal();
+        };
+
+        document.addEventListener('keydown',e=>{
+            if(e.key==='Escape') closeScreenshotsModal();
+        });
+
+        let currentLang='ru';
+
+        async function loadGames(){
+            const list=document.getElementById('games-list');
+            list.innerHTML=`<li class="loading">${currentLang==='ru'?'Загрузка игр...':'Loading games...'}</li>`;
+            const games=await loadGamesFromFile();
+            renderGames(games,currentLang);
+        }
+
+        document.addEventListener('DOMContentLoaded',()=>{
+            loadGames();
+        });
+    </script>
 </body>
 </html>
