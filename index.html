@@ -10,20 +10,21 @@
         /* Стили для баннера и галереи скриншотов */
         .game-banner {
             width: 100%;
-            max-width: 724px;
-            height: 362px;
-            object-fit: cover;
+            max-width: 1448px;
+            height: auto;
+            aspect-ratio: 1448 / 1086;
+            object-fit: contain;
             border: 3px solid #00ff00;
             margin: 10px 0;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
         }
-        
+
         .game-banner:hover {
             transform: scale(1.02);
             box-shadow: 0 0 15px #00ff00;
         }
-        
+
         .game-item {
             position: relative;
             margin: 20px 0;
