@@ -1,10 +1,7 @@
-Название: The Lighthouse
+Название: ///u_n_t_i_t_l_e_d\\\
 Ссылка: 
 Статус: development
-Описание_ru: маяк
-Описание_en: lighthouse
-Баннер: light.png
+Баннер: 
 Скриншот_1: .jpg
 Скриншот_2: .jpg
 ***
-:
