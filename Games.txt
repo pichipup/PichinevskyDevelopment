@@ -1,6 +1,6 @@
 Название: TANKOPOLY
 Ссылка: https://xencell-games.itch.io/tankopoly
-Статус: Ready
+Статус: ready
 Баннер: tankopoly.png
 Скриншот_1: .jpg
 Скриншот_2: .jpg
